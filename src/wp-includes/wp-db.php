@@ -1247,12 +1247,11 @@ class wpdb {
 			}
 		} else {
 			$class = get_class( $this );
-			if ( function_exists( '__' ) ) {
-				/* translators: %s: Database access abstraction class, usually wpdb or a class extending wpdb. */
-				_doing_it_wrong( $class, sprintf( __( '%s must set a database connection for use with escaping.' ), $class ), '3.6.0' );
-			} else {
-				_doing_it_wrong( $class, sprintf( '%s must set a database connection for use with escaping.', $class ), '3.6.0' );
-			}
+
+			wp_load_translations_early();
+			/* translators: %s: Database access abstraction class, usually wpdb or a class extending wpdb. */
+			_doing_it_wrong( $class, sprintf( __( '%s must set a database connection for use with escaping.' ), $class ), '3.6.0' );
+
 			$escaped = addslashes( $string );
 		}
 
@@ -1396,7 +1395,7 @@ class wpdb {
 
 		// If args were passed as an array (as in vsprintf), move them up.
 		$passed_as_array = false;
-		if ( is_array( $args[0] ) && count( $args ) === 1 ) {
+		if ( isset( $args[0] ) && is_array( $args[0] ) && 1 === count( $args ) ) {
 			$passed_as_array = true;
 			$args            = $args[0];
 		}
@@ -2018,11 +2017,9 @@ class wpdb {
 				$this->insert_id  = 0;
 				$this->last_query = $query;
 
-				if ( function_exists( '__' ) ) {
-					$this->last_error = __( 'WordPress database error: Could not perform query because it contains invalid data.' );
-				} else {
-					$this->last_error = 'WordPress database error: Could not perform query because it contains invalid data.';
-				}
+				wp_load_translations_early();
+
+				$this->last_error = __( 'WordPress database error: Could not perform query because it contains invalid data.' );
 
 				return false;
 			}
@@ -2551,23 +2548,21 @@ class wpdb {
 				}
 			}
 
-			if ( 1 === count( $problem_fields ) ) {
-				if ( function_exists( '__' ) ) {
-					/* translators: %s Database field where the error occurred. */
-					$message = __( 'WordPress database error: Processing the value for the following field failed: %s. The supplied value may be too long or contains invalid data.' );
-				} else {
-					$message = 'WordPress database error: Processing the value for the following field failed: %s. The supplied value may be too long or contains invalid data.';
-				}
-			} else {
-				if ( function_exists( '__' ) ) {
-					/* translators: %s Database fields where the error occurred. */
-					$message = __( 'WordPress database error: Processing the value for the following fields failed: %s. The supplied value may be too long or contains invalid data.' );
-				} else {
-					$message = 'WordPress database error: Processing the value for the following fields failed: %s. The supplied value may be too long or contains invalid data.';
-				}
-			}
+			wp_load_translations_early();
 
-			$this->last_error = sprintf( $message, implode( ', ', $problem_fields ) );
+			if ( 1 === count( $problem_fields ) ) {
+				$this->last_error = sprintf(
+					/* translators: %s: Database field where the error occurred. */
+					__( 'WordPress database error: Processing the value for the following field failed: %s. The supplied value may be too long or contains invalid data.' ),
+					reset( $problem_fields )
+				);
+			} else {
+				$this->last_error = sprintf(
+					/* translators: %s: Database fields where the error occurred. */
+					__( 'WordPress database error: Processing the values for the following fields failed: %s. The supplied values may be too long or contain invalid data.' ),
+					implode( ', ', $problem_fields )
+				);
+			}
 
 			return false;
 		}

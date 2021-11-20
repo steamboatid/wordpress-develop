@@ -577,11 +577,18 @@ function wp_plugin_update_row( $file, $plugin_data ) {
 		 * @param object $response {
 		 *     An object of metadata about the available plugin update.
 		 *
-		 *     @type int    $id          Plugin ID.
-		 *     @type string $slug        Plugin slug.
-		 *     @type string $new_version New plugin version.
-		 *     @type string $url         Plugin URL.
-		 *     @type string $package     Plugin update package URL.
+		 *     @type int    $id           Plugin ID.
+		 *     @type string $slug         Plugin slug.
+		 *     @type string $plugin       Plugin basename.
+		 *     @type string $new_version  New plugin version.
+		 *     @type string $url          Plugin URL.
+		 *     @type string $package      Plugin update package URL.
+		 *     @type array  $icons        An array of plugin icon URLs.
+		 *     @type array  $banners      An array of plugin banner URLs.
+		 *     @type array  $banners_rtl  An array of plugin RTL banner URLs.
+		 *     @type string $requires     The version of WordPress which the plugin requires.
+		 *     @type string $tested       The version of WordPress the plugin is tested against.
+		 *     @type string $requires_php The version of PHP which the plugin requires.
 		 * }
 		 */
 		do_action( "in_plugin_update_message-{$file}", $plugin_data, $response ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
